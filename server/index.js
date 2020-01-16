@@ -1,10 +1,10 @@
 import path from "path";
 import fs from "fs";
-
 import express from "express";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 
+import CONSTANTS from "./constants";
 import App from "../app/src/components/App";
 import ProgressiveSection from "../app/src/components/ProgressiveSection";
 
@@ -27,7 +27,7 @@ const serverRenderer = async (req, res, next) => {
   const globalStore = {};
 
   fs.readFile(
-    path.resolve("../app/dist/index.html"),
+    path.join(CONSTANTS.APP_BUILD_DIR, "index.html"),
     "utf8",
     async (err, data) => {
       if (err) {
@@ -93,7 +93,7 @@ const serverRenderer = async (req, res, next) => {
 router.use("^/$", serverRenderer);
 router.use(
   "/dist",
-  express.static(path.join(__dirname, "../../app/dist"), {
+  express.static(CONSTANTS.APP_BUILD_DIR, {
     maxAge: "30d"
   })
 );
@@ -101,5 +101,5 @@ router.use(
 app.use(router);
 
 app.listen(PORT, () => {
-  console.log(`SSR running on port ${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });

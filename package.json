@@ -1,7 +1,42 @@
 {
-  "private": true,
-  "workspaces": [
-    "app",
-    "server"
-  ]
+  "name": "progressive-rendering-react",
+  "version": "0.0.0",
+  "scripts": {
+    "build:prod:client": "NODE_ENV=production parcel build app/src/index.html --out-dir app/build --public-url /dist/",
+    "build:prod:server": "NODE_ENV=production parcel build server/index.js --out-dir server/build --public-url /dist/ --target node --no-cache",
+    "clean": "rimraf dist app/build server/build .cache",
+    "build:client": "NODE_ENV=development parcel build app/src/index.html --out-dir app/build --no-minify --public-url /dist/",
+    "build:server": "NODE_ENV=development parcel build server/index.js --out-dir server/build --no-minify --public-url /dist/ --target node",
+    "dev:client": "NODE_ENV=development parcel app/src/index.html --out-dir app/build --public-url /dist/",
+    "dev:server": "npm run build:client && nodemon --exec \"npm run build:server && npm run start:server\"",
+    "start:server": "NODE_ENV=development node server/build/index",
+    "start": "NODE_ENV=development ttab npm run dev:client && ttab npm run dev:server"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.0",
+    "@babel/preset-env": "^7.8.0",
+    "@babel/preset-react": "^7.8.0",
+    "autoprefixer": "^9.7.3",
+    "babel-preset-react-app": "^9.1.0",
+    "nodemon": "^2.0.2",
+    "parcel-bundler": "^1.12.4",
+    "postcss-modules": "^1.5.0",
+    "ttab": "^0.6.1"
+  },
+  "nodemonConfig": {
+    "verbose": true,
+    "ignore": [
+      "server/build/*"
+    ],
+    "watch": [
+      "app/build/*",
+      "server/*"
+    ],
+    "delay": "2000"
+  }
 }
