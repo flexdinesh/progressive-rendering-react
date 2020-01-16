@@ -5,9 +5,13 @@ import ReactDOMServer from "react-dom/server";
 
 import CONSTANTS from "../constants";
 import { getSectionOneText, getSectionTwoText } from "../api/oyster-text";
-import { renderProgressiveContentToMarkup, createStoreScript } from "./helpers";
+import {
+  renderProgressiveComponentToScript,
+  createStoreScript
+} from "./helpers";
 import App from "../../app/src/components/App";
-import ProgressiveSection from "../../app/src/components/ProgressiveSection";
+import ProgressiveComponent from "../../app/src/components/ProgressiveComponent";
+import TextSection from "../../app/src/components/TextSection";
 
 // express server route callback
 const serverRenderer = async (req, res, next) => {
@@ -35,24 +39,22 @@ const serverRenderer = async (req, res, next) => {
       res.write(firstChunk);
 
       globalStore.sectionOneText = await getSectionOneText();
-      const PSOneScript = renderProgressiveContentToMarkup(
-        "PSOne",
-        <ProgressiveSection
-          serverRenderId={"PSOne"}
-          text={globalStore.sectionOneText}
-        />
+      const PCOneScript = renderProgressiveComponentToScript(
+        "PCOne",
+        <ProgressiveComponent serverRenderId={"PCOne"}>
+          <TextSection text={globalStore.sectionOneText} />
+        </ProgressiveComponent>
       );
-      res.write(PSOneScript);
+      res.write(PCOneScript);
 
       globalStore.sectionTwoText = await getSectionTwoText();
-      const PSTwoScript = renderProgressiveContentToMarkup(
-        "PSTwo",
-        <ProgressiveSection
-          serverRenderId={"PSTwo"}
-          text={globalStore.sectionTwoText}
-        />
+      const PCTwoScript = renderProgressiveComponentToScript(
+        "PCTwo",
+        <ProgressiveComponent serverRenderId={"PCTwo"}>
+          <TextSection text={globalStore.sectionTwoText} />
+        </ProgressiveComponent>
       );
-      res.write(PSTwoScript);
+      res.write(PCTwoScript);
       res.write(createStoreScript(globalStore));
       res.end();
     }

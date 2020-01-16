@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "../images/logo.svg";
-import ProgressiveSection from "./ProgressiveSection";
+import ProgressiveComponent from "./ProgressiveComponent";
+import TextSection from "./TextSection";
 import "./App.css";
 
 function App({ store = {} }) {
@@ -18,14 +19,12 @@ function App({ store = {} }) {
         <p>This React app is progressively rendered from the server.</p>
         <code>{text}</code>
       </header>
-      <ProgressiveSection
-        serverRenderId={"PSOne"}
-        text={store.sectionOneText}
-      />
-      <ProgressiveSection
-        serverRenderId={"PSTwo"}
-        text={store.sectionTwoText}
-      />
+      <ProgressiveComponent serverRenderId={"PCOne"}>
+        <TextSection text={store.sectionOneText} />
+      </ProgressiveComponent>
+      <ProgressiveComponent serverRenderId={"PCTwo"}>
+        <TextSection text={store.sectionTwoText} />
+      </ProgressiveComponent>
     </div>
   );
 }
