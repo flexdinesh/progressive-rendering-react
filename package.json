@@ -7,10 +7,11 @@
     "clean": "rimraf dist app/build server/build .cache",
     "build:client": "NODE_ENV=development parcel build app/src/index.html --out-dir app/build --no-minify --public-url /dist/",
     "build:server": "NODE_ENV=development parcel build server/index.js --out-dir server/build --no-minify --public-url /dist/ --target node",
-    "dev:client": "NODE_ENV=development parcel app/src/index.html --out-dir app/build --public-url /dist/",
-    "dev:server": "npm run build:client && nodemon --exec \"npm run build:server && npm run start:server\"",
+    "dev:client": "NODE_ENV=development nodemon --watch app/src/ --ignore app/build/ --exec \"npm run build:client\"",
+    "dev:server": "nodemon --watch server/ --watch app/build/ --ignore server/build/ --exec \"npm run build:server && npm run start:server\"",
     "start:server": "NODE_ENV=development node server/build/index",
-    "start": "NODE_ENV=development ttab npm run dev:client && ttab npm run dev:server"
+    "dev": "NODE_ENV=development ttab npm run dev:client && ttab npm run dev:server",
+    "start": "npm run dev"
   },
   "dependencies": {
     "express": "^4.17.1",
@@ -30,13 +31,6 @@
   },
   "nodemonConfig": {
     "verbose": true,
-    "ignore": [
-      "server/build/*"
-    ],
-    "watch": [
-      "app/build/*",
-      "server/*"
-    ],
     "delay": "2000"
   }
 }
