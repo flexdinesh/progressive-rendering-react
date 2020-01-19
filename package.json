@@ -5,18 +5,21 @@
     "build:prod:client": "NODE_ENV=production parcel build app/src/index.html --out-dir app/build --public-url /dist/",
     "build:prod:server": "NODE_ENV=production parcel build server/index.js --out-dir server/build --public-url /dist/ --target node --no-cache",
     "clean": "rimraf dist app/build server/build .cache",
+    "client:only": "NODE_ENV=development parcel app/src/index.html --out-dir app/build --public-url /dist/",
     "build:client": "NODE_ENV=development parcel build app/src/index.html --out-dir app/build --no-minify --public-url /dist/",
     "build:server": "NODE_ENV=development parcel build server/index.js --out-dir server/build --no-minify --public-url /dist/ --target node",
-    "dev:client": "NODE_ENV=development nodemon --watch app/src/ --ignore app/build/ --exec \"npm run build:client\"",
+    "dev:client": "NODE_ENV=development nodemon --watch app/src/ -e js,css --ignore app/build/ --exec \"npm run build:client\"",
     "dev:server": "nodemon --watch server/ --watch app/build/ --ignore server/build/ --exec \"npm run build:server && npm run start:server\"",
     "start:server": "NODE_ENV=development node server/build/index",
     "dev": "NODE_ENV=development ttab npm run dev:client && ttab npm run dev:server",
     "start": "npm run dev"
   },
   "dependencies": {
+    "browser-or-node": "^1.2.1",
+    "classnames": "^2.2.6",
     "express": "^4.17.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "experimental",
+    "react-dom": "experimental"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",

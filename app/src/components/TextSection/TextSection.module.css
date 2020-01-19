@@ -1,3 +1,29 @@
 .wrapper {
   margin: 2rem;
+  padding: 2.5rem;
+  border: 2px solid grey;
+  font-size: 1.5rem;
+  background: rgba(255, 0, 0, 0.1);
+  position: relative;
+}
+
+.wrapper:after {
+  content: "Progressively Rendered from Server";
+  font-size: 0.65rem;
+  color: darkred;
+  background: rgba(255, 0, 0, 0.2);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.5rem;
+}
+
+.isHydrated {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.isHydrated:after {
+  content: "Progressive Hydration Complete";
+  color: darkgreen;
+  background: rgba(0, 255, 0, 0.2);
 }

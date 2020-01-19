@@ -7,16 +7,20 @@ import CONSTANTS from "../constants";
 import { getSectionOneText, getSectionTwoText } from "../api/oyster-text";
 import {
   renderProgressiveComponentToScript,
-  createStoreScript
+  createStoreScript,
+  createStoreAssignerScript
 } from "./helpers";
 import App from "../../app/src/components/App";
-import ProgressiveComponent from "../../app/src/components/ProgressiveComponent";
+import { getProgressiveComponent } from "../../app/src/components/ProgressiveComponent";
 import TextSection from "../../app/src/components/TextSection";
 
 // express server route callback
 const serverRenderer = async (req, res, next) => {
-  const renderedAppHTMLStr = ReactDOMServer.renderToString(<App />);
-  const globalStore = {};
+  const renderedAppHTMLStr = ReactDOMServer.renderToString(
+    <App store={{ RENDER_FROM: "SERVER_PLACEHOLDER" }} />
+  );
+
+  global.GLOBAL_STORE = {};
 
   fs.readFile(
     path.join(CONSTANTS.APP_BUILD_DIR, "index.html"),
@@ -29,8 +33,7 @@ const serverRenderer = async (req, res, next) => {
 
       const firstChunk = data.replace(
         '<div id="root"></div>',
-        `<div id="root">${renderedAppHTMLStr}</div>
-          `
+        `<div id="root">${renderedAppHTMLStr}</div>`
       );
 
       res.status(200);
@@ -38,24 +41,62 @@ const serverRenderer = async (req, res, next) => {
 
       res.write(firstChunk);
 
-      globalStore.sectionOneText = await getSectionOneText();
+      res.write(createStoreScript("GLOBAL_STORE"));
+
+      global.GLOBAL_STORE.sectionOneText = await getSectionOneText();
+      res.write(
+        createStoreAssignerScript(
+          "GLOBAL_STORE",
+          "sectionOneText",
+          global.GLOBAL_STORE.sectionOneText
+        )
+      );
+      const ProgressiveComponentPCOne = getProgressiveComponent({
+        RENDER_FROM: "SERVER",
+        serverRenderId: "PCOne"
+      });
       const PCOneScript = renderProgressiveComponentToScript(
         "PCOne",
-        <ProgressiveComponent serverRenderId={"PCOne"}>
-          <TextSection text={globalStore.sectionOneText} />
-        </ProgressiveComponent>
+        <ProgressiveComponentPCOne
+          serverRenderId={"PCOne"}
+          RENDER_FROM="SERVER"
+        >
+          <TextSection
+            store={global.GLOBAL_STORE}
+            storeKey={"sectionOneText"}
+            text={global.GLOBAL_STORE.sectionOneText}
+          />
+        </ProgressiveComponentPCOne>
       );
       res.write(PCOneScript);
 
-      globalStore.sectionTwoText = await getSectionTwoText();
+      global.GLOBAL_STORE.sectionTwoText = await getSectionTwoText();
+      res.write(
+        createStoreAssignerScript(
+          "GLOBAL_STORE",
+          "sectionTwoText",
+          global.GLOBAL_STORE.sectionTwoText
+        )
+      );
+
+      const ProgressiveComponentPCTwo = getProgressiveComponent({
+        RENDER_FROM: "SERVER",
+        serverRenderId: "PCTwo"
+      });
       const PCTwoScript = renderProgressiveComponentToScript(
         "PCTwo",
-        <ProgressiveComponent serverRenderId={"PCTwo"}>
-          <TextSection text={globalStore.sectionTwoText} />
-        </ProgressiveComponent>
+        <ProgressiveComponentPCTwo
+          serverRenderId={"PCTwo"}
+          RENDER_FROM="SERVER"
+        >
+          <TextSection
+            store={global.GLOBAL_STORE}
+            storeKey={"sectionTwoText"}
+            text={global.GLOBAL_STORE.sectionTwoText}
+          />
+        </ProgressiveComponentPCTwo>
       );
       res.write(PCTwoScript);
-      res.write(createStoreScript(globalStore));
       res.end();
     }
   );
