@@ -1,0 +1,8 @@
+.wrapper {
+  min-height: calc(25rem - 1rem);
+  margin-bottom: 2rem;
+}
+
+.card {
+  composes: card from "../../layout.css";
+}

@@ -1,0 +1,19 @@
+.card {
+  background: var(--card-bg, lightyellow);
+  /* background: rgba(255, 0, 0, 0.1); */
+  /* background: rgba(0, 255, 0, 0.1); */
+  border: 1px solid #d6d6d6;
+  box-shadow: 1px 1px 0px #c2c2c2;
+  display: grid;
+  align-items: center;
+}
+
+.cardP {
+  composes: card;
+  background: var(--card-bg-p, lightyellow);
+}
+
+.cardS {
+  composes: card;
+  background: var(--card-bg-s, lightyellow);
+}

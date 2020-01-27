@@ -1,83 +1,119 @@
 import React from "react";
-import logo from "../images/logo.svg";
 import { getProgressiveComponent } from "./ProgressiveComponent";
-import TextSection from "./TextSection";
+import Nav from "./DEVAlike/Nav";
+import Main from "./DEVAlike/Main";
+import Post from "./DEVAlike/Post";
+// import Listings from "./DEVAlike/Listings";
+// import TagFeed from "./DEVAlike/TagFeed";
+import LeftNav from "./DEVAlike/LeftNav";
+// import Sponsors from "./DEVAlike/Sponsors";
 import "./App.css";
 
-let ProgressiveComponentPCOne;
-let ProgressiveComponentPCTwo;
+let ProgressiveLeftSection;
+let ProgressiveRightSection;
 
 function App({ store: defaultStore }) {
-  const [text, setText] = React.useState("This is server rendered content");
-  const [store, setStore] = React.useState(defaultStore);
+  const [store, setStore] = React.useState({ ...defaultStore });
 
   React.useEffect(() => {
-    setText("Client-side hydration complete");
+    document.documentElement.style.setProperty(
+      "--card-bg",
+      "rgba(0, 255, 0, 0.1)"
+    );
+    document.documentElement.style.setProperty(
+      "--card-bg-p",
+      "rgba(0, 255, 0, 0.3)"
+    );
+    document.documentElement.style.setProperty(
+      "--card-bg-s",
+      "rgba(0, 255, 0, 0.1)"
+    );
+    // window.setTimeout(() => {
+    //   window.clearInterval(window.timerId);
+    // }, 0);
+    // setStore({...store});
+    // setHydrated(true);
+    setStore({ ...store, hydrated: true });
+    window.GLOBAL_STORE.hydrated = true;
   }, []);
 
-  React.useEffect(() => {
-    // when chunked script updates window.GLOBAL_STORE
-    setStore(store);
-  }, [Object.keys(store)]);
-
-  if (!ProgressiveComponentPCOne) {
-    ProgressiveComponentPCOne = getProgressiveComponent({
-      RENDER_FROM: store.RENDER_FROM,
-      serverRenderId: "PCOne"
+  if (!ProgressiveLeftSection) {
+    ProgressiveLeftSection = getProgressiveComponent({
+      renderfrom: store.renderfrom,
+      serverrenderid: "ProgressiveLS"
     });
   }
 
-  if (!ProgressiveComponentPCTwo) {
-    ProgressiveComponentPCTwo = getProgressiveComponent({
-      RENDER_FROM: store.RENDER_FROM,
-      serverRenderId: "PCTwo"
+  if (!ProgressiveRightSection) {
+    ProgressiveRightSection = getProgressiveComponent({
+      renderfrom: store.renderfrom,
+      serverrenderid: "ProgressiveRS"
     });
   }
 
   return (
     <div className={"App"}>
-      <header className={"App-header"}>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>This React app is progressively rendered from the server.</p>
-        <code>{text}</code>
-      </header>
-      <React.Suspense
-        fallback={
-          <div>
-            <div id={"PCOne"}></div>
-          </div>
-        }
-      >
-        <ProgressiveComponentPCOne
-          serverRenderId={"PCOne"}
-          RENDER_FROM={store.RENDER_FROM}
-        >
-          <TextSection
-            store={store}
-            storeKey={"sectionOneText"}
-            text={store.sectionOneText}
-          />
-        </ProgressiveComponentPCOne>
-      </React.Suspense>
-
-      <React.Suspense
-        fallback={
-          <div>
-            <div id={"PCTwo"}></div>
-          </div>
-        }
-      >
-        <ProgressiveComponentPCTwo
-          serverRenderId={"PCTwo"}
-          RENDER_FROM={store.RENDER_FROM}
-        >
-          <TextSection
-            store={store}
-            storeKey={"sectionTwoText"}
-            text={store.sectionTwoText}
-          />
-        </ProgressiveComponentPCTwo>
-      </React.Suspense>
+      <Nav />
+      <Main>
+        <div>
+          {(store.renderMode === "SSR" || store.renderMode === "CSR") && (
+            <LeftNav store={store} />
+          )}
+          {store.renderMode === "PSSR" && !store.hydrated && (
+            <React.Suspense
+              fallback={
+                <div>
+                  <div id={"ProgressiveLS"}>placeholder fallback</div>
+                </div>
+              }
+            >
+              <ProgressiveLeftSection
+                serverrenderid={"ProgressiveLS"}
+                renderfrom={store.renderfrom}
+              >
+                <LeftNav store={store} />
+              </ProgressiveLeftSection>
+            </React.Suspense>
+          )}
+          {store.renderMode === "PSSR" && store.hydrated && (
+            <React.Fragment>
+              <LeftNav store={store} />
+            </React.Fragment>
+          )}
+        </div>
+        <div>
+          <Post />
+          <Post />
+        </div>
+        <div>
+          {(store.renderMode === "SSR" || store.renderMode === "CSR") && (
+            <React.Fragment>
+              <LeftNav store={store} />
+            </React.Fragment>
+          )}
+          {store.renderMode === "PSSR" && !store.hydrated && (
+            <React.Suspense
+              fallback={
+                <div>
+                  <div id={"ProgressiveRS"}>placeholder fallback</div>
+                </div>
+              }
+            >
+              <ProgressiveRightSection
+                serverrenderid={"ProgressiveRS"}
+                renderfrom={store.renderfrom}
+              >
+                <LeftNav store={store} />
+              </ProgressiveRightSection>
+            </React.Suspense>
+          )}
+          {store.renderMode === "PSSR" && store.hydrated && (
+            <React.Fragment>
+              <LeftNav store={store} />
+            </React.Fragment>
+          )}
+        </div>
+      </Main>
     </div>
   );
 }

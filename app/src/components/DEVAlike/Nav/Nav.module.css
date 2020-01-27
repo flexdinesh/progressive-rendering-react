@@ -1,0 +1,31 @@
+.header {
+  padding: 0 1rem;
+}
+
+.wrapper {
+  min-height: 4rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+}
+
+.searchBar {
+  border: 1px solid transparent;
+  background: #e8e7e7;
+  height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 1rem;
+  box-shadow: 1px 1px 0px #c2c2c2;
+}
+
+.card {
+  composes: card from "../../layout.css";
+}
+
+.cardP {
+  composes: cardP from "../../layout.css";
+}
+
+.cardS {
+  composes: cardS from "../../layout.css";
+}

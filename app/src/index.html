@@ -4,9 +4,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Progressive Rendering with React</title>
+    <script id="server-injectable"></script>
   </head>
 
   <body>
+    <!-- <div
+      id="timer"
+      style="position: fixed;right: 1rem;font-size: 10rem; color: green;"
+    >
+      1
+    </div> -->
+    <!-- <script>
+      window.timerId = window.setInterval(() => {
+        const prevSec = parseInt(timer.innerText);
+        const newSec = prevSec + 1;
+        timer.innerText = newSec;
+        if (newSec >= 3 && newSec < 5) {
+          timer.style.color = "orange";
+        } else if (newSec > 5) {
+          timer.style.color = "red";
+        }
+      }, 1000);
+    </script> -->
     <div id="root"></div>
     <script src="./index.js" async></script>
   </body>

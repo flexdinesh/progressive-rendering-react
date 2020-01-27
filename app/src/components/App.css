@@ -1,5 +1,51 @@
+:root {
+  --card-bg: rgba(255, 0, 0, 0.1);
+  --card-bg-p: rgba(255, 0, 0, 0.3);
+  --card-bg-s: rgba(255, 0, 0, 0.1);
+  /* background: rgba(255, 0, 0, 0.1); */
+  /* background: rgba(0, 255, 0, 0.1); */
+}
+
+body {
+  background: #f9f9fa;
+}
+
 .App {
   text-align: center;
+}
+
+.loading {
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: ease-in;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.5) 25%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.5) 75%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+
+  background-size: 800px 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1200px;
+  }
+  100% {
+    background-position: 1200px 0;
+  }
+}
+
+.loading::after {
+  /* animation: App-logo-spin infinite 1s linear;
+  font-size: 1rem;
+  font-size: 2rem;
+  content:"🌀" */
 }
 
 .App-logo {

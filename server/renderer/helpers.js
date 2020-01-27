@@ -1,12 +1,13 @@
 const ReactDOMServer = require("react-dom/server");
 
-const renderProgressiveComponentToScript = (serverRenderId, Component) => {
+const renderProgressiveComponentToScript = (serverrenderid, Component) => {
   const compMarkup = ReactDOMServer.renderToStaticMarkup(Component);
-  const hydrateFnName = "hydrate" + serverRenderId;
-  const stitchingScript = `<script>document.querySelector("#${serverRenderId}").outerHTML = '${compMarkup}';
+  const hydrateFnName = "hydrate" + serverrenderid;
+  const stitchingScript = `<script>if(!window.GLOBAL_STORE.hydrated) { document.querySelector("#${serverrenderid}").outerHTML = '${compMarkup}';}
+  console.log('${serverrenderid} stiching script received')
   if (window["${hydrateFnName}"]) {
     window["${hydrateFnName}"]();
-    console.log('${serverRenderId} hydrated by chunked script')
+    console.log('${serverrenderid} hydrated by chunked script')
   } else {
     window["${hydrateFnName}"] = () => {};
   }
@@ -16,18 +17,13 @@ const renderProgressiveComponentToScript = (serverRenderId, Component) => {
   return stitchingScript;
 };
 
-const createStoreScript = (storeName = "GLOBAL_STORE") => {
-  return `<script>window.${storeName} = ${JSON.stringify({})};</script>`;
-};
-
 const createStoreAssignerScript = (storeName = "GLOBAL_STORE", key, value) => {
-  return `<script>if(window.${storeName}) window.${storeName}.${key} = ${JSON.stringify(
+  return `<script>window.${storeName}.${key} = ${JSON.stringify(
     value
   )};</script>`;
 };
 
 module.exports = {
   renderProgressiveComponentToScript,
-  createStoreScript,
   createStoreAssignerScript
 };
