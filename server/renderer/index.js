@@ -11,15 +11,24 @@ import {
 } from "./helpers";
 import App from "../../app/src/components/App";
 import LeftNav from "../../app/src/components/DEVAlike/LeftNav";
-// import Listings from "../../app/src/components/DEVAlike/Listings";
-// import TagFeed from "../../app/src/components/DEVAlike/TagFeed";
 import { getProgressiveComponent } from "../../app/src/components/ProgressiveComponent";
 
-// "CSR", "SSR", "PSSR"
-const RENDER_MODE = "SSR";
 const clientDevOnly = false;
 // express server route callback
 const serverRenderer = async (req, res, next) => {
+  // "CSR", "SSR", "PSSR"
+  let RENDER_MODE = "SSR";
+  let LATENCY_FACTOR = 1;
+  const modeInQuery = req.query.mode;
+  const latencyInQuery = req.query.latency;
+  if (["CSR", "SSR", "PSSR"].includes(modeInQuery)) {
+    RENDER_MODE = req.query.mode;
+  }
+  if (latencyInQuery > 0) {
+    LATENCY_FACTOR = latencyInQuery;
+  }
+  console.log({ RENDER_MODE, LATENCY_FACTOR });
+
   global.GLOBAL_STORE = {
     renderfrom: "SERVER_PLACEHOLDER",
     renderMode: RENDER_MODE,
@@ -92,7 +101,9 @@ const serverRenderer = async (req, res, next) => {
 
       res.write(firstChunk);
 
-      global.GLOBAL_STORE.sectionOneText = await getSectionOneText();
+      global.GLOBAL_STORE.sectionOneText = await getSectionOneText(
+        LATENCY_FACTOR
+      );
       res.write(
         createStoreAssignerScript("GLOBAL_STORE", "LeftNavContent", true)
       );
@@ -109,7 +120,9 @@ const serverRenderer = async (req, res, next) => {
       );
       res.write(ProgressiveLeftSectionScript);
 
-      global.GLOBAL_STORE.sectionTwoText = await getSectionTwoText();
+      global.GLOBAL_STORE.sectionTwoText = await getSectionTwoText(
+        LATENCY_FACTOR
+      );
       res.write(
         createStoreAssignerScript("GLOBAL_STORE", "RightNavContent", true)
       );
