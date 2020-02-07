@@ -17,7 +17,7 @@ const clientDevOnly = false;
 // express server route callback
 const serverRenderer = async (req, res, next) => {
   // "CSR", "SSR", "PSSR"
-  let RENDER_MODE = "SSR";
+  let RENDER_MODE = "CSR";
   let LATENCY_FACTOR = 1;
   const modeInQuery = req.query.mode;
   const latencyInQuery = req.query.latency;
@@ -141,9 +141,7 @@ const serverRenderer = async (req, res, next) => {
         </ProgressiveRightSection>
       );
       res.write(ProgressiveRightSectionScript);
-      // res.write(`<script>window.setTimeout(() => {
-      //   window.clearInterval(window.timerId);
-      // }, 0);</script>`);
+      
       res.end();
     }
   );
